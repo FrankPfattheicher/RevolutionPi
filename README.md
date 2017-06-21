@@ -1,21 +1,36 @@
-# RevolutionPi .NET libraries
-This libraries allow to create software for the
-RevolutionPi - an Open Source IPC based on Raspberry Pi (Zero)
-Visit the RevolutionPi homepage https://revolution.kunbus.de/ for more information.
+# RevolutionPi .NET Library
+This library allows to create software for the RevolutionPi, an Open Source IPC based on Raspberry Pi (Zero)
+using C# (C-Sharp) and the .NET Framework (Mono).    
 
 It supports the  data exchange with RevPi I/O-Modules and Gateways
 using the piControl driver.
 
-This code is using information provided by
-Copyright (C) 2016 : KUNBUS GmbH, Heerweg 15C, 73370 Denkendorf, Germany
+Visit the RevolutionPi homepage https://revolution.kunbus.de/ for more information.
+
+This code is using information provided by    
+Copyright (C) 2016 : KUNBUS GmbH, Heerweg 15C, 73370 Denkendorf, Germany    
 See GitHub repository https://github.com/RevolutionPi/piControl for more information.
 
+#### System Requirements
+* Mono installed - minimum version 3.x
 
+#### Development Requirements
+* VisualStudio (Windows) 2015 or 2017 (Community Edition or above)
 
-### More Information
-[Installing Mono](InstallMono.md)
+#### More Information
+* [RevolutionPi Homepage](https://revolution.kunbus.de/)
+* [Installing Mono](InstallMono.md)
+* [Kernel module for data exchange with RevPi I/O-Modules and Gateways (on GitHub)](https://github.com/RevolutionPi/piControl)
+* Bugs and Comments - please use GitHub issue report
 
+#### Roadmap
+V1.0 - planned for August 2017
+* Provide library as a Nuget package
+* Support all methods included in piControl.c
 
+#     
+#
+#### License
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
