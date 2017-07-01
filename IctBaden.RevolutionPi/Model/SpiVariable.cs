@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace IctBaden.RevolutionPi
+namespace IctBaden.RevolutionPi.Model
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct SpiVariable

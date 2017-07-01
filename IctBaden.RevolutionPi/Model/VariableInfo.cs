@@ -1,14 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Newtonsoft.Json.Linq;
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Local
 
-namespace IctBaden.RevolutionPi
+namespace IctBaden.RevolutionPi.Model
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class VariableInfo
     {
-        public int Index { get; set; }
+        public VariableType Type { get; private set; }
+        public int Index { get; private set; }
         public string  Name { get; set; }
         public long Value { get; set; }
         public byte BitOffset { get; set; }              // 0-7 bit position, >= 8 whole byte
@@ -19,8 +20,27 @@ namespace IctBaden.RevolutionPi
         public string Comment { get; set; }
         //  ""
 
-        public VariableInfo(int index, IList<JToken> json)
+        public DeviceInfo Device { get; set; }
+
+        public string LengthText
         {
+            get
+            {
+                switch (Length)
+                {
+                    case 1: return "BIT";
+                    case 8: return "BYTE";
+                    case 16: return "WORD";
+                    case 32: return "DWORD";
+                }
+                return $"[{Length}bits]";
+            }
+        }
+
+        public VariableInfo(DeviceInfo device, VariableType type, int index, IList<JToken> json)
+        {
+            Device = device;
+            Type = type;
             Index = index;
             Name = json[0].Value<string>();
             Value = json[1].Value<long>();

@@ -1,11 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace IctBaden.RevolutionPi
+namespace IctBaden.RevolutionPi.Model
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class DeviceInfo
     {
         public string CatalogNr { get; set; }
@@ -20,17 +22,52 @@ namespace IctBaden.RevolutionPi
         public int OutVariant { get; set; }
         public string Comment { get; set; }
         public int Offset { get; set; }
-        public JObject Inp;
-        public JObject Out;
-        public JObject Mem;
 
-        public VariableInfo[] Inputs => Inp?.Children()
-                    .Select(token => new VariableInfo(int.Parse(token.First().Path), token.First.Children().ToList()))
-                    .ToArray();
+// never assigned
+#pragma warning  disable 0649
+        [JsonProperty("inp")]
+        private JObject _inp;
+        [JsonProperty("out")]
+        private JObject _out;
+        [JsonProperty("mem")]
+        private JObject _mem;
+        [JsonProperty("extend")]
+        private JObject _ext;
 
-        public VariableInfo[] Outputs => Out?.Children()
-                    .Select(token => new VariableInfo(int.Parse(token.First().Path), token.First.Children().ToList()))
-                    .ToArray();
+        private VariableInfo[] GetVarInfos(JToken obj)
+        {
+            return obj?.Children()
+                .Select(token => new VariableInfo(this, VariableType.Input, int.Parse(token.First().Path), token.First.Children().ToList()))
+                .ToArray();
+        }
+
+        public VariableInfo[] Inputs => GetVarInfos(_inp);
+        public VariableInfo[] Outputs => GetVarInfos(_out);
+        public VariableInfo[] Mems => GetVarInfos(_mem);
+        public VariableInfo[] Extends => GetVarInfos(_ext);
+
+        public IEnumerable<VariableInfo> Variables
+        {
+            get
+            {
+                foreach (var variableInfo in Inputs)
+                {
+                    yield return variableInfo;
+                }
+                foreach (var variableInfo in Outputs)
+                {
+                    yield return variableInfo;
+                }
+                foreach (var variableInfo in Mems)
+                {
+                    yield return variableInfo;
+                }
+                foreach (var variableInfo in Extends)
+                {
+                    yield return variableInfo;
+                }
+            }
+        }
 
     }
 

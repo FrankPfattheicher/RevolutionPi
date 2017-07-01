@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
+using IctBaden.RevolutionPi.Configuration;
 using NUnit.Framework;
 
 namespace IctBaden.RevolutionPi.Test
@@ -13,13 +14,15 @@ namespace IctBaden.RevolutionPi.Test
         [SetUp]
         public void TestSetup()
         {
-            var json = ResourceLoader.LoadAsString(Assembly.GetAssembly(GetType()),
-                $"IctBaden.RevolutionPi.Test.{ConfigFileName}");
-            File.WriteAllText(ConfigFileName, json);
+            var assembly = Assembly.GetAssembly(GetType());
+            var json = ResourceLoader.LoadAsString(assembly, $"IctBaden.RevolutionPi.Test.{ConfigFileName}");
+            var path = Path.GetDirectoryName(assembly.Location) ?? ".";
+            var fullName = Path.Combine(path, ConfigFileName);
+            File.WriteAllText(fullName, json);
 
             configuration = new PiConfiguration
             {
-                RevPiConfigFileName = ConfigFileName
+                RevPiConfigFileName = fullName
             };
         }
 
@@ -34,7 +37,7 @@ namespace IctBaden.RevolutionPi.Test
         public void ConfigShouldHaveDevices()
         {
             configuration.Open();
-            Assert.AreEqual(1, configuration.Devices.Length);
+            Assert.AreEqual(1, configuration.Devices.Count);
         }
 
         [Test]

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using IctBaden.RevolutionPi.Model;
 
 namespace IctBaden.RevolutionPi
 {
@@ -45,24 +46,24 @@ namespace IctBaden.RevolutionPi
         [DllImport("libc", EntryPoint = "ioctl", SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern int ioctl_void(int file, uint cmd);
         [DllImport("libc", EntryPoint = "ioctl", SetLastError = true, CharSet = CharSet.Auto)]
-        private static extern int ioctl_data(int file, uint cmd, ref byte[] data);
+        internal static extern int ioctl_value(int file, uint cmd, SpiValue value);
 
 
         // piControl.h
         private const uint KB_IOC_MAGIC = 'K';
         internal static readonly uint KB_RESET = _IO(KB_IOC_MAGIC, 12);  // reset the piControl driver including the config file
-        private static uint KB_GET_DEVICE_INFO_LIST = _IO(KB_IOC_MAGIC, 13); // get the device info of all detected devices
-        private static uint KB_GET_DEVICE_INFO = _IO(KB_IOC_MAGIC, 14);  // get the device info of one device
-        private static uint KB_GET_VALUE = _IO(KB_IOC_MAGIC, 15);  // get the value of one bit in the process image
-        private static uint KB_SET_VALUE = _IO(KB_IOC_MAGIC, 16);  // set the value of one bit in the process image
-        private static uint KB_FIND_VARIABLE = _IO(KB_IOC_MAGIC, 17);  // find a varible defined in piCtory
-        private static uint KB_SET_EXPORTED_OUTPUTS = _IO(KB_IOC_MAGIC, 18);  // copy the exported outputs from a application process image to the real process image
-        private static uint KB_UPDATE_DEVICE_FIRMWARE = _IO(KB_IOC_MAGIC, 19);  // try to update the firmware of connected devices
-        private static uint KB_DIO_RESET_COUNTER = _IO(KB_IOC_MAGIC, 20);  // set a counter or endocder to 0
-        private static uint KB_GET_LAST_MESSAGE = _IO(KB_IOC_MAGIC, 21);  // copy the last error message
+        internal static uint KB_GET_DEVICE_INFO_LIST = _IO(KB_IOC_MAGIC, 13); // get the device info of all detected devices
+        internal static uint KB_GET_DEVICE_INFO = _IO(KB_IOC_MAGIC, 14);  // get the device info of one device
+        internal static uint KB_GET_VALUE = _IO(KB_IOC_MAGIC, 15);  // get the value of one bit in the process image
+        internal static uint KB_SET_VALUE = _IO(KB_IOC_MAGIC, 16);  // set the value of one bit in the process image
+        internal static uint KB_FIND_VARIABLE = _IO(KB_IOC_MAGIC, 17);  // find a varible defined in piCtory
+        internal static uint KB_SET_EXPORTED_OUTPUTS = _IO(KB_IOC_MAGIC, 18);  // copy the exported outputs from a application process image to the real process image
+        internal static uint KB_UPDATE_DEVICE_FIRMWARE = _IO(KB_IOC_MAGIC, 19);  // try to update the firmware of connected devices
+        internal static uint KB_DIO_RESET_COUNTER = _IO(KB_IOC_MAGIC, 20);  // set a counter or endocder to 0
+        internal static uint KB_GET_LAST_MESSAGE = _IO(KB_IOC_MAGIC, 21);  // copy the last error message
 
-        private static uint KB_WAIT_FOR_EVENT = _IO(KB_IOC_MAGIC, 50);  // wait for an event. This call is normally blocking
-        private const uint KB_EVENT_RESET = 1;		// piControl was reset, reload configuration
+        internal static uint KB_WAIT_FOR_EVENT = _IO(KB_IOC_MAGIC, 50);  // wait for an event. This call is normally blocking
+        internal const uint KB_EVENT_RESET = 1;		// piControl was reset, reload configuration
 
         // ReSharper restore UnusedMember.Local
         // ReSharper restore InconsistentNaming
