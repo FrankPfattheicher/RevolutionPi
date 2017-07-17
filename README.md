@@ -11,6 +11,10 @@ This code is using information provided by
 Copyright (C) 2016 : KUNBUS GmbH, Heerweg 15C, 73370 Denkendorf, Germany    
 See GitHub repository https://github.com/RevolutionPi/piControl for more information.
 
+#### Tools and Samples included in Repository
+* PiTest command line tool (similar to piTest provided bay Kunbus)
+* [Simple REST-API Variable Server](VariableServer.md)
+
 #### System Requirements
 * Mono installed - minimum version 3.x
 

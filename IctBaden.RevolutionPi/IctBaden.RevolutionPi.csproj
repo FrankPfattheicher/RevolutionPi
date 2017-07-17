@@ -33,7 +33,6 @@
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -43,7 +42,7 @@
     <Compile Include="..\RevPi-AssemblyInfo.cs">
       <Link>Properties\RevPi-AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Configuration\RevPiConfiguration.cs" />
+    <Compile Include="Configuration\PiConfiguration.cs" />
     <Compile Include="Model\DeviceInfo.cs" />
     <Compile Include="Interop.cs" />
     <Compile Include="LedColor.cs" />
