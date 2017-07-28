@@ -2,6 +2,9 @@
 
 namespace IctBaden.RevolutionPi
 {
+    /// <summary>
+    /// Bit flags of the system status byte 'RevPiStatus'
+    /// </summary>
     [Flags]
     public enum RevPiStatus
     {

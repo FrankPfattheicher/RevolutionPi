@@ -15,6 +15,10 @@ namespace IctBaden.RevolutionPi.Configuration
 
         private JObject _config;
 
+        /// <summary>
+        /// Opens the configuration file (RevPiConfigFileName)
+        /// </summary>
+        /// <returns>True if file could be opened and parsed</returns>
         public bool Open()
         {
             if (IsOpen) return true;
@@ -33,11 +37,17 @@ namespace IctBaden.RevolutionPi.Configuration
             return false;
         }
 
+        /// <summary>
+        /// Configuration is loaded.
+        /// </summary>
         public bool IsOpen => _config != null;
 
 
         private List<DeviceInfo> _devices = new List<DeviceInfo>();
 
+        /// <summary>
+        /// List of loaded device informations.
+        /// </summary>
         public List<DeviceInfo> Devices
         {
             get
@@ -60,7 +70,11 @@ namespace IctBaden.RevolutionPi.Configuration
             }
         }
 
-
+        /// <summary>
+        /// Retrieve information about a configured variable by iot's name.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns>Variable info for the given variable or null if not found.</returns>
         public VariableInfo GetVariable(string name)
         {
             return Devices.SelectMany(d => d.Inputs).FirstOrDefault(v => v.Name == name) ??

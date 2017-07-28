@@ -2,6 +2,9 @@
 
 namespace IctBaden.RevolutionPi
 {
+    /// <summary>
+    /// Setting and querying the system LEDs A1 and A2.
+    /// </summary>
     public class RevPiLeds
     {
         private readonly PiControl _control;
@@ -15,6 +18,9 @@ namespace IctBaden.RevolutionPi
             _ledAddress = info?.Address ?? 0x06;
         }
 
+        /// <summary>
+        /// Current color of system LED A1
+        /// </summary>
         public LedColor SystemLedA1
         {
             get
@@ -30,6 +36,9 @@ namespace IctBaden.RevolutionPi
             }
         }
 
+        /// <summary>
+        /// Current color of system LED A2
+        /// </summary>
         public LedColor SystemLedA2
         {
             get

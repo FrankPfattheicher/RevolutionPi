@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PiTest", "PiTest\PiTest.csproj", "{9F726AC7-FFBE-49C6-ABAA-5C3CE3962532}"
 EndProject
@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IctBaden.RevolutionPi.Test"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{349D0ABA-5D03-4B70-B064-6D2EFEEE3B31}"
 	ProjectSection(SolutionItems) = preProject
+		ApiReference.md = ApiReference.md
+		build.bat = build.bat
+		build.fsx = build.fsx
+		RevolutionPi.nuspec = RevolutionPi.nuspec
 		InstallMono.md = InstallMono.md
 		README.md = README.md
 		ReleaseNotes.md = ReleaseNotes.md

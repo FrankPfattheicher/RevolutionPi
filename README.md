@@ -24,6 +24,7 @@ See GitHub repository https://github.com/RevolutionPi/piControl for more informa
 #### More Information
 * [RevolutionPi Homepage](https://revolution.kunbus.de/)
 * [Installing Mono](InstallMono.md)
+* [API Reference](ApiReference.md)
 * [Kernel module for data exchange with RevPi I/O-Modules and Gateways (on GitHub)](https://github.com/RevolutionPi/piControl)
 * Bugs and Comments - please use GitHub issue report
 

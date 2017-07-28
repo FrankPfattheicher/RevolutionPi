@@ -16,11 +16,6 @@ namespace IctBaden.RevolutionPi
         private int _piControlHandle = -1;
 
         /// <summary>
-        /// True if connection established
-        /// </summary>
-        public bool IsOpen => _piControlHandle >= 0;
-
-        /// <summary>
         /// Opens the driver connection.
         /// </summary>
         /// <returns>True if connection successfully opened</returns>
@@ -32,6 +27,11 @@ namespace IctBaden.RevolutionPi
             }
             return IsOpen;
         }
+
+        /// <summary>
+        /// True if connection to the device driver established
+        /// </summary>
+        public bool IsOpen => _piControlHandle >= 0;
 
         /// <summary>
         /// Closes the driver connection.
@@ -99,7 +99,7 @@ namespace IctBaden.RevolutionPi
         /// </summary>
         /// <param name="address">Address of the byte in the process image</param>
         /// <param name="bit">bit position (0-7)</param>
-        /// <returns></returns>
+        /// <returns>Bit value</returns>
         public bool GetBitValue(ushort address, byte bit)
         {
             var bitValue = new SpiValue
@@ -125,7 +125,6 @@ namespace IctBaden.RevolutionPi
         /// <param name="address">Address of the byte in the process image</param>
         /// <param name="bit">bit position (0-7)</param>
         /// <param name="value"></param>
-        /// <returns></returns>
         public void SetBitValue(ushort address, byte bit, bool value)
         {
             var bitValue = new SpiValue
@@ -143,7 +142,15 @@ namespace IctBaden.RevolutionPi
             }
         }
 
-
+        /// <summary>
+        /// Converts given data according it's length to
+        /// bool   for length = 1
+        /// byte   for length = 8
+        /// ushort for length = 16
+        /// </summary>
+        /// <param name="data">Source data</param>
+        /// <param name="length">Length of information</param>
+        /// <returns>Value of data</returns>
         public object ConvertDataToValue(byte[] data, int length)
         {
             switch (length)
