@@ -20,6 +20,8 @@ See GitHub repository https://github.com/RevolutionPi/piControl for more informa
 
 #### Development Requirements
 * VisualStudio (Windows) 2015 or 2017 (Community Edition or above)
+* .NET Framework 4.0
+* Available as [Nuget package](https://www.nuget.org/packages/IctBaden.RevolutionPi/)
 
 #### More Information
 * [RevolutionPi Homepage](https://revolution.kunbus.de/)
@@ -30,7 +32,6 @@ See GitHub repository https://github.com/RevolutionPi/piControl for more informa
 
 #### Roadmap
 V1.0 - planned for August 2017
-* Provide library as a Nuget package
 * Support all methods included in piControl.c
 
 #     
