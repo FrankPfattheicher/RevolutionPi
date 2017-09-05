@@ -8,11 +8,20 @@ using System.Web.Http.Results;
 using IctBaden.RevolutionPi;
 using IctBaden.RevolutionPi.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using VariableServer.Model;
 
-namespace VariableServer
+namespace VariableServer.Controllers
 {
     public class VariableController : ApiController
     {
+        private static readonly JsonSerializerSettings JsonSerializerSettings = new JsonSerializerSettings
+        {
+            Formatting = Formatting.Indented,
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+
+
         [Route("")]
         [HttpGet]
         public async Task<IHttpActionResult> Root()
@@ -25,7 +34,7 @@ namespace VariableServer
             };
             var httpResponse = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StringContent(JsonConvert.SerializeObject(root, Formatting.Indented), Encoding.UTF8, "application/json")
+                Content = new StringContent(JsonConvert.SerializeObject(root, JsonSerializerSettings), Encoding.UTF8, "application/json")
             };
 
             var result = new ResponseMessageResult(httpResponse);
@@ -48,7 +57,7 @@ namespace VariableServer
 
             var httpResponse = new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StringContent(JsonConvert.SerializeObject(varlist, Formatting.Indented), Encoding.UTF8, "application/json")
+                Content = new StringContent(JsonConvert.SerializeObject(varlist, JsonSerializerSettings), Encoding.UTF8, "application/json")
             };
 
             var result = new ResponseMessageResult(httpResponse);
@@ -76,34 +85,34 @@ namespace VariableServer
                 };
                 httpResponse = new HttpResponseMessage(HttpStatusCode.NotFound)
                 {
-                    Content = new StringContent(JsonConvert.SerializeObject(error, Formatting.Indented), Encoding.UTF8, "application/json")
+                    Content = new StringContent(JsonConvert.SerializeObject(error, JsonSerializerSettings), Encoding.UTF8, "application/json")
                 };
             }
             else
             {
-                var iDeviceOffset = (ushort)varInfo.Device.Offset;
-                int iByteLen;
+                var deviceOffset = varInfo.Device.Offset;
+                int byteLen;
 
                 switch (varInfo.Length)
                 {
-                    case 1: iByteLen = 0; break;        // Bit
-                    case 8: iByteLen = 1; break;
-                    case 16: iByteLen = 2; break;
-                    case 32: iByteLen = 3; break;
+                    case 1: byteLen = 0; break;        // Bit
+                    case 8: byteLen = 1; break;
+                    case 16: byteLen = 2; break;
+                    case 32: byteLen = 4; break;
                     default:                            // strings, z.B. IP-Adresse
-                        iByteLen = -varInfo.Length / 8; 
+                        byteLen = -varInfo.Length / 8; 
                         break;      
                 }
 
                 byte[] data;
 
-                if (iByteLen > 0)
+                if (byteLen > 0)
                 {
-                    data = control.Read(iDeviceOffset + varInfo.Address, iByteLen);
+                    data = control.Read(deviceOffset + varInfo.Address, byteLen);
                 }
-                else if (iByteLen == 0)
+                else if (byteLen == 0)
                 {
-                    var address = (ushort) (iDeviceOffset + varInfo.Address);
+                    var address = (ushort) (deviceOffset + varInfo.Address);
                     data = new[]
                     {
                         (byte) (control.GetBitValue(address, varInfo.BitOffset) ? 1 : 0)
@@ -111,7 +120,7 @@ namespace VariableServer
                 }
                 else  // iByteLen < 0
                 {
-                    data = control.Read(iDeviceOffset + varInfo.Address, -iByteLen);
+                    data = control.Read(deviceOffset + varInfo.Address, -byteLen);
                 }
 
                 if (data == null)
@@ -123,29 +132,31 @@ namespace VariableServer
                     };
                     httpResponse = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
                     {
-                        Content = new StringContent(JsonConvert.SerializeObject(error, Formatting.Indented), Encoding.UTF8, "application/json")
+                        Content = new StringContent(JsonConvert.SerializeObject(error, JsonSerializerSettings), Encoding.UTF8, "application/json")
                     };
                 }
                 else
                 {
-                    var read = new
+                    var read = new VarReadInfo
                     {
-                        name = varname,
-                        default_value = varInfo.DefaultValue,
-                        comment = varInfo.Comment,
-                        type = varInfo.Type.ToString(),
-                        lengthText = varInfo.LengthText,
-                        length = varInfo.Length,
-                        device_offset = iDeviceOffset,
-                        var_offset = varInfo.Address,
-                        var_dev_name = varInfo.Device.Name,
-                        var_dev_offset = varInfo.Device.Offset,
-                        data,
-                        value = control.ConvertDataToValue(data, iByteLen)
-                        };
+                        Name = varname,
+                        DefaultValue = varInfo.DefaultValue,
+                        Comment = varInfo.Comment,
+                        Type = varInfo.Type.ToString(),
+                        LengthText = varInfo.LengthText,
+                        Length = varInfo.Length,
+                        Address = varInfo.Address,
+                        Device = new VarDeviceInfo
+                        { 
+                            Name = varInfo.Device.Name,
+                            Offset = varInfo.Device.Offset
+                        },
+                        Data = data.Select(d => (int)d).ToArray(),
+                        Value = control.ConvertDataToValue(data)
+                    };
                     httpResponse = new HttpResponseMessage(HttpStatusCode.OK)
                     {
-                        Content = new StringContent(JsonConvert.SerializeObject(read, Formatting.Indented), Encoding.UTF8, "application/json")
+                        Content = new StringContent(JsonConvert.SerializeObject(read, JsonSerializerSettings), Encoding.UTF8, "application/json")
                     };
                 }
             }

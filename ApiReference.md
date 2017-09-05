@@ -75,14 +75,10 @@ Set the value of one bit in the process image.
     value   : Bit value to be written    
 
 
-#### object ConvertDataToValue(byte[] data, int length)
-Converts given data according it's length to
-* bool   for length = 1
-* byte   for length = 8
-* ushort for length = 16
+#### object ConvertDataToValue(byte[] data)
+Converts given data to value
 
     data   : Source data
-    length : Length of information
 
 Returns value of data.
 

@@ -1,4 +1,5 @@
 
+* 0.4.2 - ConvertDataToValue fixed. VariableServer response more JSON-like.
 * 0.4.1 - VariableServer CORS added. VariableInfo issues fixed. ReadVariable extended.
 * 0.4.0 - API reference documentation and Nuget package added.
 * 0.3.0 - VariableServer added (Query variables using REST-API).

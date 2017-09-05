@@ -21,7 +21,7 @@ namespace IctBaden.RevolutionPi.Model
         public int InpVariant { get; set; }
         public int OutVariant { get; set; }
         public string Comment { get; set; }
-        public int Offset { get; set; }
+        public ushort Offset { get; set; }
 
 // never assigned
 #pragma warning  disable 0649

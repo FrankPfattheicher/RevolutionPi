@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text;
 using IctBaden.RevolutionPi.Model;
 
 namespace IctBaden.RevolutionPi
@@ -143,26 +144,26 @@ namespace IctBaden.RevolutionPi
         }
 
         /// <summary>
-        /// Converts given data according it's length to
-        /// bool   for length = 1
-        /// byte   for length = 8
-        /// ushort for length = 16
+        /// Converts given data to value
         /// </summary>
         /// <param name="data">Source data</param>
-        /// <param name="length">Length of information</param>
         /// <returns>Value of data</returns>
-        public object ConvertDataToValue(byte[] data, int length)
+        public object ConvertDataToValue(byte[] data)
         {
-            switch (length)
+            switch (data.Length)
             {
                 case 1:
-                    return data[0] != 0;
-                case 8:
                     return data[0];
-                case 16:
+                case 2:
                     return (ushort)(data[0] + (data[1] * 0x100));
+                case 3:
+                    return data[0] +
+                           (ulong)(data[1] * 0x100) +
+                           (ulong)(data[2] * 0x10000) +
+                           (ulong)(data[3] * 0x1000000);
+                default:
+                    return Encoding.ASCII.GetString(data);
             }
-            return null;
         }
 
     }

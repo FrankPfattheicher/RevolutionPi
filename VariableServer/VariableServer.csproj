@@ -98,9 +98,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\VarDeviceInfo.cs" />
+    <Compile Include="Model\VarReadInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="VariableController.cs" />
+    <Compile Include="Controllers\VariableController.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

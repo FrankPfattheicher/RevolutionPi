@@ -157,7 +157,7 @@ namespace PiTest
             var data = control.Read(varInfo.Address, varInfo.Length);
             if (data == null) return;
 
-            var value = control.ConvertDataToValue(data, varInfo.Length);
+            var value = control.ConvertDataToValue(data);
             Console.WriteLine($"{varInfo.LengthText} {varInfo.Name} = {value} = 0x{value:X}");
         }
 
