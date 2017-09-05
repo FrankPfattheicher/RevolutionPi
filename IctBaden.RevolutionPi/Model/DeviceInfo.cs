@@ -38,7 +38,8 @@ namespace IctBaden.RevolutionPi.Model
         {
             return obj?.Children()
                 .Select(token => new VariableInfo(this, VariableType.Input, int.Parse(token.First().Path), token.First.Children().ToList()))
-                .ToArray();
+                .ToArray()
+                ?? new VariableInfo[0];
         }
 
         public VariableInfo[] Inputs => GetVarInfos(_inp);

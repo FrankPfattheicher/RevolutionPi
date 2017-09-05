@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Net;
 using System.Net.Http.Extensions.Compression.Core.Compressors;
 using System.Threading;
 using System.Web.Http;
-using IctBaden.RevolutionPi;
-using IctBaden.RevolutionPi.Configuration;
+using System.Web.Http.Cors;
 using Microsoft.AspNet.WebApi.Extensions.Compression.Server;
 using Owin;
 
@@ -15,10 +15,20 @@ namespace VariableServer
 
         public void Configuration(IAppBuilder app)
         {
+            // ReSharper disable once AssignNullToNotNullAttribute
+            if (app.Properties.TryGetValue(typeof(HttpListener).FullName, out object httpListener)
+                && httpListener is HttpListener)
+            {
+                // HttpListener should not return exceptions that occur
+                // when sending the response to the client
+                ((HttpListener)httpListener).IgnoreWriteExceptions = true;
+            }
+
             var config = new HttpConfiguration();
             config.MapHttpAttributeRoutes();
             config.EnsureInitialized();
             config.MessageHandlers.Add(new ServerCompressionHandler(new GZipCompressor(), new DeflateCompressor()));
+            config.EnableCors(new EnableCorsAttribute("*", "*", "*"));
             app.Use((context, next) =>
             {
                 var rqIndex = Interlocked.Increment(ref _index);

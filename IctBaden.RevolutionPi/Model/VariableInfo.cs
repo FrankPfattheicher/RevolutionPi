@@ -11,14 +11,14 @@ namespace IctBaden.RevolutionPi.Model
         public VariableType Type { get; private set; }
         public int Index { get; private set; }
         public string  Name { get; set; }
-        public long Value { get; set; }
+        public object DefaultValue { get; set; }
         public byte BitOffset { get; set; }              // 0-7 bit position, >= 8 whole byte
         public ushort Length { get; set; }               // length of the variable in bits. Possible values are 1, 8, 16 and 32
         public ushort Address { get; set; }              // Address of the byte in the process image
         public bool Export { get; set; }
         //  "0000",
+        public string Unknown { get; set; }               //"0001"
         public string Comment { get; set; }
-        //  ""
 
         public DeviceInfo Device { get; set; }
 
@@ -43,12 +43,20 @@ namespace IctBaden.RevolutionPi.Model
             Type = type;
             Index = index;
             Name = json[0].Value<string>();
-            Value = json[1].Value<long>();
+            DefaultValue = json[1].Value<object>();
             Length = json[2].Value<ushort>();
             Address = json[3].Value<ushort>();
             Export = json[4].Value<bool>();
-
+            Unknown = json[5].Value<string>();
             Comment = json[6].Value<string>();
+            try
+            {
+                BitOffset = json[7].Value<byte>();
+            }
+            catch
+            {
+                BitOffset = 0;
+            }
         }
     }
 }

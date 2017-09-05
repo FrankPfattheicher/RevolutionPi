@@ -81,7 +81,39 @@ namespace VariableServer
             }
             else
             {
-                var data = control.Read(varInfo.Address, varInfo.Length);
+                var iDeviceOffset = (ushort)varInfo.Device.Offset;
+                int iByteLen;
+
+                switch (varInfo.Length)
+                {
+                    case 1: iByteLen = 0; break;        // Bit
+                    case 8: iByteLen = 1; break;
+                    case 16: iByteLen = 2; break;
+                    case 32: iByteLen = 3; break;
+                    default:                            // strings, z.B. IP-Adresse
+                        iByteLen = -varInfo.Length / 8; 
+                        break;      
+                }
+
+                byte[] data;
+
+                if (iByteLen > 0)
+                {
+                    data = control.Read(iDeviceOffset + varInfo.Address, iByteLen);
+                }
+                else if (iByteLen == 0)
+                {
+                    var address = (ushort) (iDeviceOffset + varInfo.Address);
+                    data = new[]
+                    {
+                        (byte) (control.GetBitValue(address, varInfo.BitOffset) ? 1 : 0)
+                    };
+                }
+                else  // iByteLen < 0
+                {
+                    data = control.Read(iDeviceOffset + varInfo.Address, -iByteLen);
+                }
+
                 if (data == null)
                 {
                     var error = new
@@ -99,10 +131,18 @@ namespace VariableServer
                     var read = new
                     {
                         name = varname,
+                        default_value = varInfo.DefaultValue,
+                        comment = varInfo.Comment,
                         type = varInfo.Type.ToString(),
-                        length = varInfo.LengthText,
-                        value = control.ConvertDataToValue(data, varInfo.Length)
-                    };
+                        lengthText = varInfo.LengthText,
+                        length = varInfo.Length,
+                        device_offset = iDeviceOffset,
+                        var_offset = varInfo.Address,
+                        var_dev_name = varInfo.Device.Name,
+                        var_dev_offset = varInfo.Device.Offset,
+                        data,
+                        value = control.ConvertDataToValue(data, iByteLen)
+                        };
                     httpResponse = new HttpResponseMessage(HttpStatusCode.OK)
                     {
                         Content = new StringContent(JsonConvert.SerializeObject(read, Formatting.Indented), Encoding.UTF8, "application/json")
