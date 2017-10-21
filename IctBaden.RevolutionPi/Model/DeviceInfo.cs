@@ -34,18 +34,18 @@ namespace IctBaden.RevolutionPi.Model
         [JsonProperty("extend")]
         private JObject _ext;
 
-        private VariableInfo[] GetVarInfos(JToken obj)
+        private VariableInfo[] GetVarInfos(JToken obj, VariableType type)
         {
             return obj?.Children()
-                .Select(token => new VariableInfo(this, VariableType.Input, int.Parse(token.First().Path), token.First.Children().ToList()))
+                .Select(token => new VariableInfo(this, type, int.Parse(token.First().Path), token.First.Children().ToList()))
                 .ToArray()
                 ?? new VariableInfo[0];
         }
 
-        public VariableInfo[] Inputs => GetVarInfos(_inp);
-        public VariableInfo[] Outputs => GetVarInfos(_out);
-        public VariableInfo[] Mems => GetVarInfos(_mem);
-        public VariableInfo[] Extends => GetVarInfos(_ext);
+        public VariableInfo[] Inputs => GetVarInfos(_inp, VariableType.Input);
+        public VariableInfo[] Outputs => GetVarInfos(_out, VariableType.Output);
+        public VariableInfo[] Mems => GetVarInfos(_mem, VariableType.Memory);
+        public VariableInfo[] Extends => GetVarInfos(_ext, VariableType.Extend);
 
         public IEnumerable<VariableInfo> Variables
         {

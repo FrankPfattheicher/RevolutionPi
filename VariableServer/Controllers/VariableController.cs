@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -29,8 +31,10 @@ namespace VariableServer.Controllers
             var root = new
             {
                 service = "RevolutionPi Variable Server",
+                version = Assembly.GetAssembly(GetType()).GetName().Version.ToString(),
                 varlist = "GET ~/variables",
-                readvar = "GET ~/variables/{varname}"
+                readvar = "GET ~/variables/{varname}",
+                readprop = "GET ~/variables/{varname}/{propname}"
             };
             var httpResponse = new HttpResponseMessage(HttpStatusCode.OK)
             {
@@ -68,13 +72,30 @@ namespace VariableServer.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> ReadVariable(string varname)
         {
+            var readInfo = GetVarReadInfo(varname);
+
+            if (readInfo.HttpResponse == null)
+            {
+                readInfo.HttpResponse = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(JsonConvert.SerializeObject(readInfo, JsonSerializerSettings), Encoding.UTF8, "application/json")
+                };
+            }
+            var result = new ResponseMessageResult(readInfo.HttpResponse);
+            return await Task.FromResult(result);
+        }
+
+
+        private VarReadInfo GetVarReadInfo(string varname)
+        { 
             var config = Request.GetOwinContext().Get<PiConfiguration>("PiConfig");
             var control = Request.GetOwinContext().Get<PiControl>("PiControl");
 
-            HttpResponseMessage httpResponse;
+            var readInfo = new VarReadInfo();
+
             var varInfo = config.Devices
                 .SelectMany(d => d.Variables)
-                .FirstOrDefault(v => v.Name == varname);
+                .FirstOrDefault(v => string.Compare(v.Name, varname, StringComparison.InvariantCultureIgnoreCase) == 0);
 
             if (varInfo == null)
             {
@@ -83,63 +104,31 @@ namespace VariableServer.Controllers
                     error = "Variable not found",
                     name = varname
                 };
-                httpResponse = new HttpResponseMessage(HttpStatusCode.NotFound)
+                readInfo.HttpResponse = new HttpResponseMessage(HttpStatusCode.NotFound)
                 {
                     Content = new StringContent(JsonConvert.SerializeObject(error, JsonSerializerSettings), Encoding.UTF8, "application/json")
                 };
             }
             else
             {
-                var deviceOffset = varInfo.Device.Offset;
-                int byteLen;
-
-                switch (varInfo.Length)
-                {
-                    case 1: byteLen = 0; break;        // Bit
-                    case 8: byteLen = 1; break;
-                    case 16: byteLen = 2; break;
-                    case 32: byteLen = 4; break;
-                    default:                            // strings, z.B. IP-Adresse
-                        byteLen = -varInfo.Length / 8; 
-                        break;      
-                }
-
-                byte[] data;
-
-                if (byteLen > 0)
-                {
-                    data = control.Read(deviceOffset + varInfo.Address, byteLen);
-                }
-                else if (byteLen == 0)
-                {
-                    var address = (ushort) (deviceOffset + varInfo.Address);
-                    data = new[]
-                    {
-                        (byte) (control.GetBitValue(address, varInfo.BitOffset) ? 1 : 0)
-                    };
-                }
-                else  // iByteLen < 0
-                {
-                    data = control.Read(deviceOffset + varInfo.Address, -byteLen);
-                }
-
-                if (data == null)
+                var varData = control.ReadVariable(varInfo);
+                if (varData == null)
                 {
                     var error = new
                     {
                         error = "Could not read variable",
                         name = varname
                     };
-                    httpResponse = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                    readInfo.HttpResponse = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
                     {
                         Content = new StringContent(JsonConvert.SerializeObject(error, JsonSerializerSettings), Encoding.UTF8, "application/json")
                     };
                 }
                 else
                 {
-                    var read = new VarReadInfo
+                    readInfo = new VarReadInfo
                     {
-                        Name = varname,
+                        Name = varInfo.Name,
                         DefaultValue = varInfo.DefaultValue,
                         Comment = varInfo.Comment,
                         Type = varInfo.Type.ToString(),
@@ -151,18 +140,50 @@ namespace VariableServer.Controllers
                             Name = varInfo.Device.Name,
                             Offset = varInfo.Device.Offset
                         },
-                        Data = data.Select(d => (int)d).ToArray(),
-                        Value = control.ConvertDataToValue(data)
-                    };
-                    httpResponse = new HttpResponseMessage(HttpStatusCode.OK)
-                    {
-                        Content = new StringContent(JsonConvert.SerializeObject(read, JsonSerializerSettings), Encoding.UTF8, "application/json")
+                        Data = varData.Raw.Select(d => (int)d).ToArray(),
+                        Value = varData.Value
                     };
                 }
             }
 
-            var result = new ResponseMessageResult(httpResponse);
+            return readInfo;
+        }
+
+        [Route("variables/{varname}/{propname}")]
+        [HttpGet]
+        public async Task<IHttpActionResult> ReadVariableProperty(string varname, string propname)
+        {
+            var readInfo = GetVarReadInfo(varname);
+
+            if (readInfo.HttpResponse == null)
+            {
+                var prop = readInfo.GetType().GetProperties()
+                    .FirstOrDefault(p => string.Compare(p.Name, propname, StringComparison.InvariantCultureIgnoreCase) == 0);
+                if (prop == null)
+                {
+                    var error = new
+                    {
+                        error = "Unknown roperty",
+                        name = propname
+                    };
+                    readInfo.HttpResponse = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                    {
+                        Content = new StringContent(JsonConvert.SerializeObject(error, JsonSerializerSettings), Encoding.UTF8, "application/json")
+                    };
+                }
+                else
+                {
+                    var propval = prop.GetValue(readInfo);
+
+                    readInfo.HttpResponse = new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StringContent(JsonConvert.SerializeObject(propval, JsonSerializerSettings), Encoding.UTF8, "application/json")
+                    };
+                }
+            }
+            var result = new ResponseMessageResult(readInfo.HttpResponse);
             return await Task.FromResult(result);
         }
+
     }
 }

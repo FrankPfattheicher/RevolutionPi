@@ -166,5 +166,45 @@ namespace IctBaden.RevolutionPi
             }
         }
 
+        public VarData ReadVariable(VariableInfo varInfo)
+        {
+            var deviceOffset = varInfo.Device.Offset;
+            int byteLen;
+
+            switch (varInfo.Length)
+            {
+                case 1: byteLen = 0; break;        // Bit
+                case 8: byteLen = 1; break;
+                case 16: byteLen = 2; break;
+                case 32: byteLen = 4; break;
+                default:                            // strings, z.B. IP-Adresse
+                    byteLen = -varInfo.Length / 8;
+                    break;
+            }
+
+            var varData = new VarData();
+
+            if (byteLen > 0)
+            {
+                varData.Raw = Read(deviceOffset + varInfo.Address, byteLen);
+            }
+            else if (byteLen == 0)
+            {
+                var address = (ushort)(deviceOffset + varInfo.Address);
+                varData.Raw = new[]
+                {
+                    (byte) (GetBitValue(address, varInfo.BitOffset) ? 1 : 0)
+                };
+            }
+            else  // iByteLen < 0
+            {
+                varData.Raw = Read(deviceOffset + varInfo.Address, -byteLen);
+            }
+
+            if (varData.Raw == null) return null;
+
+            varData.Value = ConvertDataToValue(varData.Raw);
+            return varData;
+        }
     }
 }
