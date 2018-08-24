@@ -9,7 +9,7 @@ namespace IctBaden.RevolutionPi.Test
     public class ConfigurationTests
     {
         const string ConfigFileName = "config.json";
-        private PiConfiguration configuration;
+        private PiConfiguration _configuration;
 
         [SetUp]
         public void TestSetup()
@@ -20,7 +20,7 @@ namespace IctBaden.RevolutionPi.Test
             var fullName = Path.Combine(path, ConfigFileName);
             File.WriteAllText(fullName, json);
 
-            configuration = new PiConfiguration
+            _configuration = new PiConfiguration
             {
                 RevPiConfigFileName = fullName
             };
@@ -29,29 +29,29 @@ namespace IctBaden.RevolutionPi.Test
         [Test]
         public void OpenConfigFileShouldSucceed()
         {
-            var opened = configuration.Open();
+            var opened = _configuration.Open();
             Assert.IsTrue(opened);
         }
 
         [Test]
         public void ConfigShouldHaveDevices()
         {
-            configuration.Open();
-            Assert.AreEqual(1, configuration.Devices.Count);
+            _configuration.Open();
+            Assert.AreEqual(1, _configuration.Devices.Count);
         }
 
         [Test]
         public void ConfigShouldHaveInputs()
         {
-            configuration.Open();
-            Assert.AreEqual(5, configuration.Devices[0].Inputs.Length);
+            _configuration.Open();
+            Assert.AreEqual(5, _configuration.Devices[0].Inputs.Length);
         }
 
         [Test]
         public void ConfigShouldHaveOutputs()
         {
-            configuration.Open();
-            Assert.AreEqual(3, configuration.Devices[0].Outputs.Length);
+            _configuration.Open();
+            Assert.AreEqual(3, _configuration.Devices[0].Outputs.Length);
         }
     }
 }

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "PiTest.Core": {
+      "commandName": "Project",
+      "commandLineArgs": "-s"
+    }
+  }
+}

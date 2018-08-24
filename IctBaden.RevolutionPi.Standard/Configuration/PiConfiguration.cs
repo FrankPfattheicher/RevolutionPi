@@ -38,7 +38,7 @@ namespace IctBaden.RevolutionPi.Configuration
             }
             catch (Exception ex)
             {
-                Trace.TraceError($"RevPi.Configuration.Open failed: {ex.Message}");
+                Trace.TraceError($"PiConfiguration.Open failed: {ex.Message}");
             }
             return false;
         }

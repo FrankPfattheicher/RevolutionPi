@@ -2,18 +2,23 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using System.Text.RegularExpressions;
+using System.Threading;
 using IctBaden.RevolutionPi;
 using IctBaden.RevolutionPi.Configuration;
 using IctBaden.RevolutionPi.Model;
 
 namespace PiTest
 {
+    // To build use:
+    //      dotnet publish . -r linux-arm --self-contained
+    // 
     internal class Program
     {
         private static void Main(string[] args)
         {
-            Trace.Listeners.Add(new ConsoleTraceListener(false));
+            Trace.Listeners.Add(new TextWriterTraceListener(Console.Out));
 
             if (args.Length == 0 || args.Any(a => new Regex(@"^-[\?hH]$").IsMatch(a)))
             {
@@ -26,6 +31,8 @@ namespace PiTest
                 Console.WriteLine(" -r <varName>     Read variable");
                 Console.WriteLine(" -y <led> <color> Set system LED (1/2) to color");
                 Console.WriteLine("                    r - red, g - green, o - orange, x - off");
+                Console.WriteLine(" -l               Show leds actual colors");
+                Console.WriteLine(" -b               Blink leds");
                 Environment.Exit(0);
             }
 
@@ -45,7 +52,7 @@ namespace PiTest
 
             var leds = new RevPiLeds(control, config);
 
-            string name = (args.Length >= 2) ? args[1] : string.Empty;
+            var name = (args.Length >= 2) ? args[1] : string.Empty;
             switch (args[0])
             {
                 case "-x":
@@ -75,8 +82,7 @@ namespace PiTest
                     ReadVarValue(config, control, name);
                     break;
                 case "-y":
-                    int led;
-                    int.TryParse((args.Length >= 2) ? args[1] : string.Empty, out led);
+                    int.TryParse((args.Length >= 2) ? args[1] : string.Empty, out var led);
                     var color = (args.Length >= 3) ? args[2] : string.Empty;
                     if ((led < 1) || (led > 2) || string.IsNullOrEmpty(color))
                     {
@@ -84,6 +90,12 @@ namespace PiTest
                         Environment.Exit(3);
                     }
                     SetLed(leds, led, color);
+                    break;
+                case "-l":
+                    Console.WriteLine($"Led A1 = {leds.SystemLedA1}, A2 = {leds.SystemLedA2}");
+                    break;
+                case "-b":
+                    BlinkLeds(leds);
                     break;
             }
 
@@ -133,6 +145,29 @@ namespace PiTest
             {
                 leds.SystemLedA2 = ledColor;
             }
+        }
+
+        private static void BlinkLeds(RevPiLeds leds)
+        {
+            var pattern = new []
+            {
+                new [] {LedColor.Red, LedColor.Off},
+                new [] {LedColor.Off, LedColor.Red},
+                new [] {LedColor.Green, LedColor.Off},
+                new [] {LedColor.Off, LedColor.Green},
+                new [] {LedColor.Orange, LedColor.Off},
+                new [] {LedColor.Off, LedColor.Orange}
+            };
+
+            for(var ix = 0; ix < 10; ix++) foreach (var ledColors in pattern)
+            {
+                leds.SystemLedA1 = ledColors[0];
+                leds.SystemLedA2 = ledColors[1];
+                Thread.Sleep(500);
+            }
+
+            leds.SystemLedA1 = LedColor.Off;
+            leds.SystemLedA2 = LedColor.Off;
         }
 
         private static void ShowVarInfo(PiConfiguration config, string name)
