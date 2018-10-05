@@ -13,7 +13,7 @@ namespace IctBaden.RevolutionPi
         internal const int O_CREAT = 0x00000100;
         internal const int O_TRUNC = 0x00001000;
         internal const int O_APPEND = 0x00002000;
-        internal const int O_NONBLOCK = 00004000;
+        internal const int O_NONBLOCK = 0x00004000;
         internal const int O_DSYNC = 0x00010000;
         internal const int O_DIRECT = 0x00040000;
 
