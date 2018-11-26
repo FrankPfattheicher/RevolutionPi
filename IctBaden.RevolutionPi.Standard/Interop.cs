@@ -22,18 +22,18 @@ namespace IctBaden.RevolutionPi
         internal const int SEEK_END = 2;
         // ReSharper restore UnusedMember.Global
 
-        [DllImport("libc", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("libc", SetLastError = true)]
         internal static extern int open(string fileName, int mode);
 
-        [DllImport("libc", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("libc", SetLastError = true)]
         internal static extern int close(int file);
 
-        [DllImport("libc", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("libc", SetLastError = true)]
         internal static extern long lseek(int file, int offset, int whence);
 
-        [DllImport("libc", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("libc", SetLastError = true)]
         internal static extern int read(int file, [MarshalAs(UnmanagedType.LPArray)] byte[] buffer, int count);
-        [DllImport("libc", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("libc", SetLastError = true)]
         internal static extern int write(int file, [MarshalAs(UnmanagedType.LPArray)] byte[] buffer, int count);
 
 
@@ -52,9 +52,9 @@ namespace IctBaden.RevolutionPi
             (inout | ((len & IOCPARM_MASK) << 16) | ((group) << 8) | (num));
         private static uint _IO(uint g, uint n) => _IOC(IOC_VOID, (g), (n), 0);
 
-        [DllImport("libc", EntryPoint = "ioctl", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("libc", EntryPoint = "ioctl", SetLastError = true)]
         internal static extern int ioctl_void(int file, uint cmd);
-        [DllImport("libc", EntryPoint = "ioctl", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("libc", EntryPoint = "ioctl", SetLastError = true)]
         internal static extern int ioctl_value(int file, uint cmd, SpiValue value);
 
 

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
 using System.Text;
 using IctBaden.RevolutionPi.Model;
+// ReSharper disable UnusedMember.Global
 
 namespace IctBaden.RevolutionPi
 {
@@ -14,8 +12,7 @@ namespace IctBaden.RevolutionPi
         /// </summary>
         public string PiControlDeviceName = "/dev/piControl0";
 
-        private FileStream _piControlFile;
-        private int PiControlHandle => _piControlFile?.SafeFileHandle?.DangerousGetHandle().ToInt32() ?? 0;
+        private int _piControlHandle = -1;
 
         /// <summary>
         /// Opens the driver connection.
@@ -23,17 +20,9 @@ namespace IctBaden.RevolutionPi
         /// <returns>True if connection successfully opened</returns>
         public bool Open()
         {
-            if (IsOpen) return true;
-
-            _piControlFile = File.Open(PiControlDeviceName, FileMode.Open, FileAccess.ReadWrite);
-            if (IsOpen)
+            if (!IsOpen)
             {
-                Trace.TraceInformation($"PiControl: Using {PiControlDeviceName}");
-            }
-            else
-            {
-                var err = Marshal.GetLastWin32Error();
-                Trace.TraceError($"PiControl.Open: open {PiControlDeviceName} failed: errno = {err}, handle = {PiControlHandle}");
+                _piControlHandle = Interop.open(PiControlDeviceName, Interop.O_RDWR);
             }
             return IsOpen;
         }
@@ -41,7 +30,7 @@ namespace IctBaden.RevolutionPi
         /// <summary>
         /// True if connection to the device driver established
         /// </summary>
-        public bool IsOpen => _piControlFile != null;
+        public bool IsOpen => _piControlHandle >= 0;
 
         /// <summary>
         /// Closes the driver connection.
@@ -50,8 +39,8 @@ namespace IctBaden.RevolutionPi
         {
             if (!IsOpen) return;
 
-            _piControlFile.Dispose();
-            _piControlFile = null;
+            Interop.close(_piControlHandle);
+            _piControlHandle = -1;
         }
 
         /// <summary>
@@ -62,7 +51,7 @@ namespace IctBaden.RevolutionPi
         {
             if (!Open()) return false;
 
-            return Interop.ioctl_void(PiControlHandle, Interop.KB_RESET) >= 0;
+            return Interop.ioctl_void(_piControlHandle, Interop.KB_RESET) >= 0;
         }
 
         /// <summary>
@@ -75,23 +64,13 @@ namespace IctBaden.RevolutionPi
         {
             if (!IsOpen) return null;
 
-            try
+            if (Interop.lseek(_piControlHandle, offset, Interop.SEEK_SET) < 0)
             {
-                _piControlFile.Seek(offset, SeekOrigin.Begin);
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError($"PiControl.Read: Seek failed: {ex.Message}");
                 return null;
             }
 
             var data = new byte[length];
-            var bytesRead = _piControlFile.Read(data, 0, length);
-            if (bytesRead < 0)
-            {
-                var err = Marshal.GetLastWin32Error();
-                Trace.TraceError($"PiControl.Read: read 0x{offset:X2} failed: errno = {err}");
-            }
+            var bytesRead = Interop.read(_piControlHandle, data, length);
             return bytesRead != length ? null : data;
         }
 
@@ -105,19 +84,13 @@ namespace IctBaden.RevolutionPi
         {
             if (!IsOpen) return 0;
 
-            try
+            if (Interop.lseek(_piControlHandle, offset, Interop.SEEK_SET) < 0)
             {
-                _piControlFile.Seek(offset, SeekOrigin.Begin);
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError($"PiControl.Write: Seek failed: {ex.Message}");
                 return 0;
             }
 
-            _piControlFile.Write(data, 0, data.Length);
-            _piControlFile.Flush();
-            return data.Length;
+            var bytesWritten = Interop.write(_piControlHandle, data, data.Length);
+            return bytesWritten;
         }
 
         /// <summary>
@@ -136,7 +109,7 @@ namespace IctBaden.RevolutionPi
 
             if (!IsOpen) return false;
 
-            if (Interop.ioctl_value(PiControlHandle, Interop.KB_GET_VALUE, bitValue) < 0)
+            if (Interop.ioctl_value(_piControlHandle, Interop.KB_GET_VALUE, bitValue) < 0)
             {
                 Trace.TraceError("PiControl.SetBitValue: Failed to read bit value.");
                 return false;
@@ -163,7 +136,7 @@ namespace IctBaden.RevolutionPi
 
             if (!IsOpen) return;
 
-            if (Interop.ioctl_value(PiControlHandle, Interop.KB_SET_VALUE, bitValue) < 0)
+            if (Interop.ioctl_value(_piControlHandle, Interop.KB_SET_VALUE, bitValue) < 0)
             {
                 Trace.TraceError("PiControl.SetBitValue: Failed to write bit value.");
             }

@@ -12,7 +12,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>@description@</description>
     <releaseNotes>@releaseNotes@</releaseNotes>
-    <copyright>Copyright ICT Baden GmbH 2017</copyright>
+    <copyright>Copyright ICT Baden GmbH 2017-2018</copyright>
     <tags>RevolutionPi .NET Library</tags>
     @dependencies@
     @references@

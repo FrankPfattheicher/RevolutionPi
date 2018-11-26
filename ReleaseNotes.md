@@ -1,4 +1,5 @@
 
+* 0.5.2 - Updated nuget packages. Removed CharSet=CharSet.Auto from interop tor fix .NET Core problems.
 * 0.5.1 - Updated nuget packages. VariableServer with variable detail routes. PiControl ReadVariable added. VariableInfo Type fixed.
 * 0.4.2 - ConvertDataToValue fixed. VariableServer response more JSON-like.
 * 0.4.1 - VariableServer CORS added. VariableInfo issues fixed. ReadVariable extended.
