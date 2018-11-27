@@ -11,7 +11,7 @@ namespace IctBaden.RevolutionPi.Test
             using (var manifestResourceStream = assembly.GetManifestResourceStream(resourceName))
             {
                 if (manifestResourceStream == null)
-                    return (string)null;
+                    return null;
                 using (var streamReader = new StreamReader(manifestResourceStream, Encoding.Default))
                     return streamReader.ReadToEnd();
             }

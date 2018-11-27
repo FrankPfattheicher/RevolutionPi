@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using Microsoft.AspNet.WebApi.Extensions.Compression.Server;
 using Owin;
+// ReSharper disable UnusedMember.Global
 
 namespace VariableServer
 {
@@ -17,11 +18,11 @@ namespace VariableServer
         {
             // ReSharper disable once AssignNullToNotNullAttribute
             if (app.Properties.TryGetValue(typeof(HttpListener).FullName, out object httpListener)
-                && httpListener is HttpListener)
+                && httpListener is HttpListener listener)
             {
                 // HttpListener should not return exceptions that occur
                 // when sending the response to the client
-                ((HttpListener)httpListener).IgnoreWriteExceptions = true;
+                listener.IgnoreWriteExceptions = true;
             }
 
             var config = new HttpConfiguration();

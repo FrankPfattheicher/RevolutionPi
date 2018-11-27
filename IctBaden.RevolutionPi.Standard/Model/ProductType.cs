@@ -1,6 +1,7 @@
-﻿namespace IctBaden.RevolutionPi.Model
+﻿// ReSharper disable UnusedMember.Global
+namespace IctBaden.RevolutionPi.Model
 {
-    class ProductType
+    public class ProductType
     {
         public int Value { get; set; }
 

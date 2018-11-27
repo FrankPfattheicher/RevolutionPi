@@ -75,8 +75,7 @@ namespace PiTest
                     ReadVarValue(config, control, name);
                     break;
                 case "-y":
-                    int led;
-                    int.TryParse((args.Length >= 2) ? args[1] : string.Empty, out led);
+                    int.TryParse((args.Length >= 2) ? args[1] : string.Empty, out var led);
                     var color = (args.Length >= 3) ? args[2] : string.Empty;
                     if ((led < 1) || (led > 2) || string.IsNullOrEmpty(color))
                     {

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Text;
 using IctBaden.RevolutionPi.Model;
+// ReSharper disable UnusedMember.Global
 
 namespace IctBaden.RevolutionPi
 {

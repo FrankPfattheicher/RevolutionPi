@@ -36,7 +36,7 @@ namespace IctBaden.RevolutionPi
             set
             {
                 var oldValue = LedByte;
-                LedByte = (byte) ((LedByte & ~0x03) | (byte) value);
+                LedByte = (byte) ((oldValue & ~0x03) | (byte) value);
             }
         }
 
