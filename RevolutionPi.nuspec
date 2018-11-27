@@ -1,21 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-    <id>@project@</id>
-    <version>@build.number@</version>
-    <authors>@authors@</authors>
-    <owners>@authors@</owners>
-    <summary>@summary@</summary>
+    <id>IctBaden.RevolutionPi</id>
+    <version>0.0.0.0</version>
+    <authors>Frank Pfattheicher</authors>
+    <owners>Frank Pfattheicher</owners>
+    <summary>.NET support libraries for data exchange with RevPi I/O-Modules and Gateways</summary>
     <licenseUrl>https://github.com/FrankPfattheicher/RevolutionPi</licenseUrl>
     <projectUrl>https://github.com/FrankPfattheicher/RevolutionPi</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/FrankPfattheicher/RevolutionPi/master/icon64.png</iconUrl>
+    <iconUrl>https://i.ibb.co/1TPJ1NN/icon64.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>@description@</description>
-    <releaseNotes>@releaseNotes@</releaseNotes>
+    <description>.NET support libraries for data exchange with RevPi I/O-Modules and Gateways</description>
+    <releaseNotes>Net standard version</releaseNotes>
     <copyright>Copyright ICT Baden GmbH 2017-2018</copyright>
     <tags>RevolutionPi .NET Library</tags>
-    @dependencies@
-    @references@
+     <dependencies> 
+     <group targetFramework="net40">
+       <dependency id="Newtonsoft.Json" version="11.0.2" />
+     </group> 
+     <group targetFramework=".NETStandard2.0">
+       <dependency id="Newtonsoft.Json" version="11.0.2" /> 
+     </group> 
+     </dependencies> 
+    <!-- <references> -->
+    <!-- <group targetFramework="net40"> -->
+    <!-- </group> -->
+    <!-- <group targetFramework=".NETStandard2.0"> -->
+    <!-- </group> -->
+    <!-- </references> -->
   </metadata>
-  @files@
+  <files>
+    <file src="icon64.png" target="icon64.png" />
+    <file src="nuget\lib\net40\*.dll" target="lib\net40" />
+    <file src="nuget\lib\net40\*.pdb" target="lib\net40" />
+    <file src="nuget\lib\netstandard2.0\*.dll" target="lib\netstandard2.0" />
+    <file src="nuget\lib\netstandard2.0\*.pdb" target="lib\netstandard2.0" />
+  </files>
 </package>
