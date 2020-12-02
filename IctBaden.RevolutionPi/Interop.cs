@@ -4,7 +4,7 @@ using IctBaden.RevolutionPi.Model;
 
 namespace IctBaden.RevolutionPi
 {
-    internal class Interop
+    internal static class Interop
     {
         // ReSharper disable InconsistentNaming
         // ReSharper disable UnusedMember.Local
@@ -32,13 +32,12 @@ namespace IctBaden.RevolutionPi
 
 
         // see ioctl.h
-        private const uint IOCPARM_MASK = 0x1fff;		/* parameter length, at most 13 bits */
+        private const uint IOCPARM_MASK = 0x1FFF;		/* parameter length, at most 13 bits */
 
-        private const uint IOC_VOID = 0x20000000;   /* no parameters */
+        private const uint IOC_VOID = 0x00000000;   /* no parameters */
         private const uint IOC_OUT = 0x40000000;    /* copy out parameters */
-        private const uint IOC_IN = 0x80000000; /* copy in parameters */
+        private const uint IOC_IN = 0x80000000;     /* copy in parameters */
         private const uint IOC_INOUT = (IOC_IN | IOC_OUT);
-        private const uint IOC_DIRMASK = 0xe0000000;    /* mask for IN/OUT/VOID */
 
         private static uint _IOC(uint inout, uint group, uint num, uint len) =>
             (inout | ((len & IOCPARM_MASK) << 16) | ((group) << 8) | (num));
@@ -53,17 +52,17 @@ namespace IctBaden.RevolutionPi
         // piControl.h
         private const uint KB_IOC_MAGIC = 'K';
         internal static readonly uint KB_RESET = _IO(KB_IOC_MAGIC, 12);  // reset the piControl driver including the config file
-        internal static uint KB_GET_DEVICE_INFO_LIST = _IO(KB_IOC_MAGIC, 13); // get the device info of all detected devices
-        internal static uint KB_GET_DEVICE_INFO = _IO(KB_IOC_MAGIC, 14);  // get the device info of one device
-        internal static uint KB_GET_VALUE = _IO(KB_IOC_MAGIC, 15);  // get the value of one bit in the process image
-        internal static uint KB_SET_VALUE = _IO(KB_IOC_MAGIC, 16);  // set the value of one bit in the process image
-        internal static uint KB_FIND_VARIABLE = _IO(KB_IOC_MAGIC, 17);  // find a varible defined in piCtory
-        internal static uint KB_SET_EXPORTED_OUTPUTS = _IO(KB_IOC_MAGIC, 18);  // copy the exported outputs from a application process image to the real process image
-        internal static uint KB_UPDATE_DEVICE_FIRMWARE = _IO(KB_IOC_MAGIC, 19);  // try to update the firmware of connected devices
-        internal static uint KB_DIO_RESET_COUNTER = _IO(KB_IOC_MAGIC, 20);  // set a counter or endocder to 0
-        internal static uint KB_GET_LAST_MESSAGE = _IO(KB_IOC_MAGIC, 21);  // copy the last error message
+        internal static readonly uint KB_GET_DEVICE_INFO_LIST = _IO(KB_IOC_MAGIC, 13); // get the device info of all detected devices
+        internal static readonly uint KB_GET_DEVICE_INFO = _IO(KB_IOC_MAGIC, 14);  // get the device info of one device
+        internal static readonly uint KB_GET_VALUE = _IO(KB_IOC_MAGIC, 15);  // get the value of one bit in the process image
+        internal static readonly uint KB_SET_VALUE = _IO(KB_IOC_MAGIC, 16);  // set the value of one bit in the process image
+        internal static readonly uint KB_FIND_VARIABLE = _IO(KB_IOC_MAGIC, 17);  // find a varible defined in piCtory
+        internal static readonly uint KB_SET_EXPORTED_OUTPUTS = _IO(KB_IOC_MAGIC, 18);  // copy the exported outputs from a application process image to the real process image
+        internal static readonly uint KB_UPDATE_DEVICE_FIRMWARE = _IO(KB_IOC_MAGIC, 19);  // try to update the firmware of connected devices
+        internal static readonly uint KB_DIO_RESET_COUNTER = _IO(KB_IOC_MAGIC, 20);  // set a counter or endocder to 0
+        internal static readonly uint KB_GET_LAST_MESSAGE = _IO(KB_IOC_MAGIC, 21);  // copy the last error message
 
-        internal static uint KB_WAIT_FOR_EVENT = _IO(KB_IOC_MAGIC, 50);  // wait for an event. This call is normally blocking
+        internal static readonly uint KB_WAIT_FOR_EVENT = _IO(KB_IOC_MAGIC, 50);  // wait for an event. This call is normally blocking
         internal const uint KB_EVENT_RESET = 1;		// piControl was reset, reload configuration
 
         // ReSharper restore UnusedMember.Local
