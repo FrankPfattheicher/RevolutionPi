@@ -2,24 +2,24 @@
 <package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <metadata xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <id>IctBaden.RevolutionPi</id>
-    <version>0.0.0.0</version>
+    <version>0.5.4</version>
     <authors>Frank Pfattheicher</authors>
     <owners>Frank Pfattheicher</owners>
     <summary>.NET support libraries for data exchange with RevPi I/O-Modules and Gateways</summary>
-    <licenseUrl>https://github.com/FrankPfattheicher/RevolutionPi</licenseUrl>
+      <license type="expression">GPL-3.0-or-later</license>
     <projectUrl>https://github.com/FrankPfattheicher/RevolutionPi</projectUrl>
     <iconUrl>https://i.ibb.co/1TPJ1NN/icon64.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>.NET support libraries for data exchange with RevPi I/O-Modules and Gateways</description>
     <releaseNotes>Net standard version</releaseNotes>
-    <copyright>Copyright ICT Baden GmbH 2017-2018</copyright>
+    <copyright>Copyright ICT Baden GmbH 2017-2021</copyright>
     <tags>RevolutionPi .NET Library</tags>
      <dependencies> 
      <group targetFramework="net40">
-       <dependency id="Newtonsoft.Json" version="11.0.2" />
+       <dependency id="Newtonsoft.Json" version="12.0.3" />
      </group> 
      <group targetFramework=".NETStandard2.0">
-       <dependency id="Newtonsoft.Json" version="11.0.2" /> 
+       <dependency id="Newtonsoft.Json" version="12.0.3" /> 
      </group> 
      </dependencies> 
     <!-- <references> -->

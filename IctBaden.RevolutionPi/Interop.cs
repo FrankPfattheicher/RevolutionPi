@@ -1,5 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using IctBaden.RevolutionPi.Model;
+
+using off_t = System.Int32;
+
 // ReSharper disable UnusedMember.Global
 
 namespace IctBaden.RevolutionPi
@@ -23,7 +26,7 @@ namespace IctBaden.RevolutionPi
         internal static extern int close(int file);
 
         [DllImport("libc", SetLastError = true, CharSet = CharSet.Auto)]
-        internal static extern long lseek(int file, int offset, int whence);
+        internal static extern off_t lseek(int file, int offset, int whence);
 
         [DllImport("libc", SetLastError = true, CharSet = CharSet.Auto)]
         internal static extern int read(int file, [MarshalAs(UnmanagedType.LPArray)] byte[] buffer, int count);

@@ -1,6 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using IctBaden.RevolutionPi.Model;
 
+using off_t = System.Int32;
+
 namespace IctBaden.RevolutionPi
 {
     internal class Interop
@@ -29,7 +31,7 @@ namespace IctBaden.RevolutionPi
         internal static extern int close(int file);
 
         [DllImport("libc", SetLastError = true)]
-        internal static extern long lseek(int file, int offset, int whence);
+        internal static extern off_t lseek(int file, int offset, int whence);
 
         [DllImport("libc", SetLastError = true)]
         internal static extern int read(int file, [MarshalAs(UnmanagedType.LPArray)] byte[] buffer, int count);
